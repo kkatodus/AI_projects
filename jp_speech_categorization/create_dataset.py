@@ -28,7 +28,7 @@ if labelled_data_exist:
 
 else:
     print("No labelled data found. Creating new file.")
-    labelled_data_df = pd.DataFrame(columns=["speech", "label", "label_id", "record_position"])
+    labelled_data_df = pd.DataFrame(columns=["speech", "label", "label_id", "record_position"], index=None)
     startRecord = 1
     
 label2id = read_json(os.path.join(RESOURCE_DIR, "labels.json"))
@@ -43,9 +43,10 @@ def check_labelid_input(input):
 
 def iterate_speech_segments(speech):
     for speech_segment in speech.split("。"):
-        print(speech_segment)
         is_valid_input = False
         while not is_valid_input:
+            print("___________________________________________________________")
+            print(speech_segment)
             label_id = input(f"Please enter the label id or quit by pressing q\n{id2label}: ")
             is_valid_input = check_labelid_input(label_id)
         if label_id == "q":
@@ -69,7 +70,8 @@ while True:
     "nameOfHouse=衆議院",
     "recordPacking=json",
     f"startRecord={startRecord}",
-    "maximumRecords=100"]
+    "maximumRecords=100",
+    "any=防衛"]
     requests = mcc.make_requests(conditions_list)
     speeches = requests["speechRecord"]
     for idx, speech in enumerate(speeches):
