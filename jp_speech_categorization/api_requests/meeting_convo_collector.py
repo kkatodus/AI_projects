@@ -8,7 +8,7 @@ class MeetingConvoCollector:
     def __init__(self, base_url):
         self.base_url = base_url
 
-    def make_requests(self, conditions_list=None):
+    def make_requests(self, conditions_list=None, accumulate_requests=False):
         #format the conditions for the request
         if conditions_list:
             conditions_link = "&" + "&".join(conditions_list)
@@ -22,6 +22,8 @@ class MeetingConvoCollector:
             
             response = requests.get(request_url)
             response = response.json()
+            if not accumulate_requests:
+                return response
             
             if "nextRecordPosition" not in response.keys():
                 print("No more records")
