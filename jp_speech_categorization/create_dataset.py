@@ -24,7 +24,7 @@ if labelled_data_exist:
     oldest_labelled_filename = max([os.path.join(DATA_DIR, filename) for filename in os.listdir(DATA_DIR)], key=os.path.getctime)
     print(f"Getting oldest labelled data at {oldest_labelled_filename}")
     labelled_data_df = pd.read_csv(os.path.join(DATA_DIR, oldest_labelled_filename))
-    startRecord = list(labelled_data_df["record_position"])[-1]
+    startRecord = list(labelled_data_df["record_position"])[-1] + 1
 
 else:
     print("No labelled data found. Creating new file.")
@@ -33,6 +33,7 @@ else:
     
 label2id = read_json(os.path.join(RESOURCE_DIR, "labels.json"))
 id2label = {v:k for k, v in label2id.items()}
+id2label_string = "\n".join([f"{k}: {v}" for k, v in id2label.items()])
 
 def check_labelid_input(input):
     if input not in list(id2label.keys()) + ["q"]:
@@ -43,11 +44,13 @@ def check_labelid_input(input):
 
 def iterate_speech_segments(speech):
     for speech_segment in speech.split("。"):
+        if not speech_segment:
+            continue
         is_valid_input = False
         while not is_valid_input:
             print("___________________________________________________________")
             print(speech_segment)
-            label_id = input(f"Please enter the label id or quit by pressing q\n{id2label}: ")
+            label_id = input(f"Please enter the label id or quit by pressing q\n{id2label_string}: ")
             is_valid_input = check_labelid_input(label_id)
         if label_id == "q":
             print("Quitting...")
@@ -76,7 +79,9 @@ while True:
     speeches = requests["speechRecord"]
     for idx, speech in enumerate(speeches):
         speech_text = speech['speech']
-        speech_text = re.sub(r"^\s+", "", speech_text, flags = re.MULTILINE)
+        speech_text = re.sub(r'^\s+|"', "", speech_text, flags = re.MULTILINE)
+        speech_text.replace("\n", "")
+        speech_text.replace('"', "")
         record_position = startRecord + idx
         iterate_speech_segments(speech_text)
 
