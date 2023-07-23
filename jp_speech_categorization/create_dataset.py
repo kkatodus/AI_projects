@@ -50,6 +50,7 @@ def iterate_speech_segments(speech):
         while not is_valid_input:
             print("___________________________________________________________")
             print(speech_segment)
+            print("number of data points", len(labelled_data_df))
             label_id = input(f"Please enter the label id or quit by pressing q\n{id2label_string}: ")
             is_valid_input = check_labelid_input(label_id)
         if label_id == "q":
