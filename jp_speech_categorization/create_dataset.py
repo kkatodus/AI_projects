@@ -75,7 +75,7 @@ while True:
     "recordPacking=json",
     f"startRecord={startRecord}",
     "maximumRecords=100",
-    "any=防衛"]
+    "any=少子"]
     requests = mcc.make_requests(conditions_list)
     speeches = requests["speechRecord"]
     for idx, speech in enumerate(speeches):
